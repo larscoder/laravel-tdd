@@ -12,7 +12,7 @@ class RepositoryControllerTest extends TestCase
 {
     use WithFaker, RefreshDatabase;
 
-    public function testGuest()
+    public function test_guest()
     {
         $this->get('repositories')->assertRedirect('login');
         $this->get('repositories/1')->assertRedirect('login');
@@ -23,9 +23,8 @@ class RepositoryControllerTest extends TestCase
         $this->post('repositories', [])->assertRedirect('login');
     }
 
-    public function testStore()
+    public function test_store()
     {
-
         $data = [
             'url' => $this->faker->url,
             'description' => $this->faker->text
@@ -40,7 +39,7 @@ class RepositoryControllerTest extends TestCase
         $this->assertDatabaseHas('repositories', $data);
     }
 
-    public function testUpdate()
+    public function test_update()
     {
         $repository = Repository::factory()->create();
         $data = [
@@ -55,5 +54,27 @@ class RepositoryControllerTest extends TestCase
             ->assertRedirect("repositories/{$repository->id}/edit");
 
         $this->assertDatabaseHas('repositories', $data);
+    }
+
+    public function test_validate_store()
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->post('repositories', [])
+            ->assertStatus(302)
+            ->assertSessionHasErrors(['url', 'description']);
+    }
+
+    public function test_validate_update()
+    {
+        $repository = Repository::factory()->create();
+
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->put("repositories/{$repository->id}", [])
+            ->assertStatus(302)
+            ->assertSessionHasErrors(['url', 'description']);
     }
 }
