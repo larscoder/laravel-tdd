@@ -72,6 +72,27 @@ class RepositoryControllerTest extends TestCase
         $this->assertDatabaseHas('repositories', $data);
     }
 
+    public function test_show()
+    {
+        $user = User::factory()->create();
+        $repository = Repository::factory()->create(['user_id' => $user->id]);
+
+
+        $this->actingAs($user)
+            ->get("repositories/{$repository->id}")
+            ->assertStatus(200);
+    }
+
+    public function test_show_policy()
+    {
+        $user = User::factory()->create();
+        $repository = Repository::factory()->create();
+
+        $this->actingAs($user)
+            ->put("repositories/{$repository->id}")
+            ->assertStatus(403);
+    }
+
     public function test_validate_update()
     {
         $user = User::factory()->create();

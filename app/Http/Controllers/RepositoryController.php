@@ -53,9 +53,13 @@ class RepositoryController extends Controller
      * @param  \App\Models\Repository  $repository
      * @return \Illuminate\Http\Response
      */
-    public function show(Repository $repository)
+    public function show(Request $request, Repository $repository)
     {
-        //
+        if ((int)$request->user()->id !== (int)$repository->user_id) {
+            abort(403);
+        }
+
+        return view('repositories.show', compact('repository'));
     }
 
     /**
