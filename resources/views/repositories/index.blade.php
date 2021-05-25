@@ -30,10 +30,15 @@
                                         Ver
                                     </a>
                                 </td>
+                                <td class="border py-2">
+                                    <a href="{{ route('repositories.edit', $repository) }}">
+                                        Editar
+                                    </a>
+                                </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="3" class="border px-4 py-2">
+                                <td colspan="4" class="border px-4 py-2">
                                     No hay repositorios creados
                                 </td>
                             </tr>

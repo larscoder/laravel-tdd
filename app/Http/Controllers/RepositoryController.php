@@ -68,9 +68,13 @@ class RepositoryController extends Controller
      * @param  \App\Models\Repository  $repository
      * @return \Illuminate\Http\Response
      */
-    public function edit(Repository $repository)
+    public function edit(Request $request, Repository $repository)
     {
-        //
+        if ((int)$request->user()->id !== (int)$repository->user_id) {
+            abort(403);
+        }
+
+        return view('repositories.edit', compact('repository'));
     }
 
     /**
