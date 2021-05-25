@@ -94,10 +94,15 @@ class RepositoryController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Repository  $repository
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Repository $repository)
+    public function destroy(Request $request, Repository $repository)
     {
+        if ((int)$request->user()->id !== (int)$repository->user_id) {
+            abort(403);
+        }
+
         $repository->delete();
 
         return redirect()->route('repositories.index');
