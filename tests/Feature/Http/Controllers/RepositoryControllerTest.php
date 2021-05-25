@@ -2,12 +2,15 @@
 
 namespace Tests\Feature\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class RepositoryControllerTest extends TestCase
 {
+    use WithFaker, RefreshDatabase;
+
     public function testGuest()
     {
         $this->get('repositories')->assertRedirect('login');
@@ -17,5 +20,22 @@ class RepositoryControllerTest extends TestCase
         $this->delete('repositories/1')->assertRedirect('login');
         $this->get('repositories/create')->assertRedirect('login');
         $this->post('repositories', [])->assertRedirect('login');
+    }
+
+    public function testStore()
+    {
+
+        $data = [
+            'url' => $this->faker->url,
+            'description' => $this->faker->text
+        ];
+
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->post('repositories', $data)
+            ->assertRedirect('repositories');
+
+        $this->assertDatabaseHas('repositories', $data);
     }
 }
