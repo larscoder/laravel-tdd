@@ -41,19 +41,36 @@ class RepositoryControllerTest extends TestCase
 
     public function test_update()
     {
-        $repository = Repository::factory()->create();
+        $user = User::factory()->create();
+        $repository = Repository::factory()->create(['user_id' => $user->id]);
+
         $data = [
             'url' => $this->faker->url,
             'description' => $this->faker->text
         ];
 
-        $user = User::factory()->create();
 
         $this->actingAs($user)
             ->put("repositories/{$repository->id}", $data)
             ->assertRedirect("repositories/{$repository->id}/edit");
 
         $this->assertDatabaseHas('repositories', $data);
+    }
+
+    public function test_update_policy()
+    {
+        $user = User::factory()->create();
+        $repository = Repository::factory()->create();
+
+        $data = [
+            'url' => $this->faker->url,
+            'description' => $this->faker->text
+        ];
+
+
+        $this->actingAs($user)
+            ->put("repositories/{$repository->id}", $data)
+            ->assertStatus(403);
     }
 
     public function test_validate_store()
@@ -68,9 +85,9 @@ class RepositoryControllerTest extends TestCase
 
     public function test_validate_update()
     {
-        $repository = Repository::factory()->create();
-
         $user = User::factory()->create();
+        $repository = Repository::factory()->create(['user_id' => $user->id]);
+
 
         $this->actingAs($user)
             ->put("repositories/{$repository->id}", [])

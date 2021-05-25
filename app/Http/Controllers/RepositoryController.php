@@ -76,6 +76,10 @@ class RepositoryController extends Controller
      */
     public function update(Request $request, Repository $repository)
     {
+        if ((int)$request->user()->id !== (int)$repository->user_id) {
+            abort(403);
+        }
+
         $request->validate([
             'url' => 'required',
             'description' => 'required',
