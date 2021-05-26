@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RespositoryRequest;
 use App\Models\Repository;
-use Illuminate\Http\Request;
 
 class RepositoryController extends Controller
 {
@@ -12,10 +12,10 @@ class RepositoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
         return view('repositories.index', [
-            'repositories' => $request->user()->repositories
+            'repositories' => auth()->user()->repositories
         ]);
     }
 
@@ -35,13 +35,8 @@ class RepositoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(RespositoryRequest $request)
     {
-        $request->validate([
-            'url' => 'required',
-            'description' => 'required',
-        ]);
-
         $request->user()->repositories()->create($request->all());
 
         return redirect()->route('repositories.index');
@@ -53,11 +48,9 @@ class RepositoryController extends Controller
      * @param  \App\Models\Repository  $repository
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, Repository $repository)
+    public function show(Repository $repository)
     {
-        if ((int)$request->user()->id !== (int)$repository->user_id) {
-            abort(403);
-        }
+        $this->authorize('pass', $repository);
 
         return view('repositories.show', compact('repository'));
     }
@@ -68,11 +61,9 @@ class RepositoryController extends Controller
      * @param  \App\Models\Repository  $repository
      * @return \Illuminate\Http\Response
      */
-    public function edit(Request $request, Repository $repository)
+    public function edit(Repository $repository)
     {
-        if ((int)$request->user()->id !== (int)$repository->user_id) {
-            abort(403);
-        }
+        $this->authorize('pass', $repository);
 
         return view('repositories.edit', compact('repository'));
     }
@@ -84,16 +75,9 @@ class RepositoryController extends Controller
      * @param  \App\Models\Repository  $repository
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Repository $repository)
+    public function update(RespositoryRequest $request, Repository $repository)
     {
-        if ((int)$request->user()->id !== (int)$repository->user_id) {
-            abort(403);
-        }
-
-        $request->validate([
-            'url' => 'required',
-            'description' => 'required',
-        ]);
+        $this->authorize('pass', $repository);
 
         $repository->update($request->all());
 
@@ -107,11 +91,9 @@ class RepositoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, Repository $repository)
+    public function destroy(Repository $repository)
     {
-        if ((int)$request->user()->id !== (int)$repository->user_id) {
-            abort(403);
-        }
+        $this->authorize('pass', $repository);
 
         $repository->delete();
 
