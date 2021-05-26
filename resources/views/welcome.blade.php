@@ -11,7 +11,7 @@
     <body class="bg-gray-200">
         <ul class="max-w-lg bg-white border-r border-gray shadow-xl">
             @foreach($repositories as $repository)
-                <li class="flex items-center text-black hover:bg-gray-300">
+                <li class="flex items-center text-black hover:bg-gray-300 p-2">
                     <img
                         src="{{ $repository->user->profile_photo_url }}"
                         alt="{{ $repository->user->name }}"
@@ -25,7 +25,7 @@
                             <p>{{ $repository->description }}</p>
                         </div>
                         <span class="text-xs font-medium text-gray-600">
-                            {{ $repository->created_at }}
+                            {{ $repository->created_at->diffForHumans() }}
                         </span>
                     </div>
                 </li>

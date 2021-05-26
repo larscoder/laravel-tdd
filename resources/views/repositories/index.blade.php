@@ -25,12 +25,12 @@
                                 <td class="border px-4 py-2">
                                     {{ $repository->url }}
                                 </td>
-                                <td class="border py-2">
+                                <td class="px-4 py-2">
                                     <a href="{{ route('repositories.show', $repository) }}">
                                         Ver
                                     </a>
                                 </td>
-                                <td class="border py-2">
+                                <td class="px-4 py-2">
                                     <a href="{{ route('repositories.edit', $repository) }}">
                                         Editar
                                     </a>
@@ -38,7 +38,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="border px-4 py-2">
+                                <td colspan="4">
                                     No hay repositorios creados
                                 </td>
                             </tr>
